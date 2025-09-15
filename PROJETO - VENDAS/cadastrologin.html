@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Inserir Usuário</title>
+</head>
+<body>
+
+<h1><marquee>Cadastro de Usuário</marquee></h1>
+
+<label>Login:</label>
+<input type="text" id="login">
+
+<label>Perfil:</label>
+<select id="perfil">
+  <option value="admin">Admin</option>
+  <option value="user">User</option>
+</select>
+
+<label>Email:</label>
+<input type="email" id="email">
+
+<label>Senha:</label>
+<input type="password" id="senha">
+
+<button id="btnInserir">Cadastrar</button>
+
+<pre id="out"></pre>
+
+<script>
+document.getElementById("btnInserir").onclick = async () => {
+  const login = document.getElementById("login").value.trim();
+  const perfil = document.getElementById("perfil").value;
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value;
+  const out = document.getElementById("out");
+  out.textContent = "";
+
+  if (!login || !email || !senha) { 
+    out.textContent = "Preencha todos os campos."; 
+    return; 
+  }
+
+  try {
+    const res = await fetch("https://jovemtech.criesites.shop/api/inserirLogin.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ login, perfil, email, senha })
+    });
+    const data = await res.json();
+
+    if (!data.ok) { 
+      out.textContent = "Erro: " + data.error; 
+      return; 
+    }
+
+    // Usuário cadastrado com sucesso
+    alert(`Usuário cadastrado com sucesso! ID: ${data.id}`);
+    window.location.href = "login.html"; // Redireciona para login
+
+  } catch (err) { 
+    out.textContent = "Falha na requisição: " + err.message; 
+  }
+};
+</script>
+
+</body>
+
+</html>
